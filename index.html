@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Day</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            overflow: hidden;
+        }
+
+        /* SCREENS */
+        .screen {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        h1 {
+            font-size: clamp(26px, 4vw, 42px);
+        }
+
+        /* ✅ FIXED BUTTONS */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #yesBtn {
+            background: green;
+            color: white;
+        }
+
+        #noBtn {
+            background: red;
+            color: white;
+        }
+
+        /* NEXT BUTTON */
+        .nextBtn {
+            display: none;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* BACKGROUNDS */
+        #screen1 {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+
+        #screen2 {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+        }
+
+        #screen3 {
+            background: black;
+            color: white;
+        }
+
+        #screen4 {
+            background: black;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* CONFETTI */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -20px;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* FLOWERS */
+        .flower {
+            position: absolute;
+            font-size: 24px;
+            top: -50px;
+            animation: flowerFall linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes flowerFall {
+            0% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SCREEN 1 -->
+    <div id="screen1" class="screen active">
+        <h1>Is it your birthday? 🎉</h1>
+        <button id="yesBtn" class="btn">Yes</button>
+        <button id="noBtn" class="btn">No</button>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div id="screen2" class="screen">
+        <h1>🎂 Happy Birthday!! 🎉</h1>
+        <p>Click anywhere 👀</p>
+    </div>
+
+    <!-- SCREEN 3 -->
+    <div id="screen3" class="screen">
+        <div id="messageBox"></div>
+        <button id="nextBtn1" class="nextBtn">Next 💌</button>
+    </div>
+
+    <!-- SCREEN 4 -->
+    <div id="screen4" class="screen">
+        <div id="messageBox2"></div>
+        <button id="nextBtn2" class="nextBtn">Next ➡️</button>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById("yesBtn");
+        const noBtn = document.getElementById("noBtn");
+
+        const screen1 = document.getElementById("screen1");
+        const screen2 = document.getElementById("screen2");
+        const screen3 = document.getElementById("screen3");
+        const screen4 = document.getElementById("screen4");
+
+        const nextBtn1 = document.getElementById("nextBtn1");
+        const nextBtn2 = document.getElementById("nextBtn2");
+
+        /* SCREEN SWITCH */
+        function showScreen(s) {
+            document.querySelectorAll(".screen").forEach(e => e.classList.remove("active"));
+            s.classList.add("active");
+        }
+
+        /* CONFETTI */
+        function createConfetti(target) {
+            for (let i = 0; i < 120; i++) {
+                let c = document.createElement("div");
+                c.className = "confetti";
+                c.style.left = Math.random() * 100 + "%";
+                c.style.background = `hsl(${Math.random() * 360},100%,50%)`;
+                c.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                target.appendChild(c);
+            }
+        }
+
+        function clearConfetti() {
+            document.querySelectorAll(".confetti").forEach(c => c.remove());
+        }
+
+        /* FLOWERS */
+        function createFlowers() {
+            const flowers = ["🌸", "🌺", "🌼", "🌷", "💐", "🌹"];
+            for (let i = 0; i < 80; i++) {
+                let f = document.createElement("div");
+                f.className = "flower";
+                f.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+                f.style.left = Math.random() * 100 + "%";
+                f.style.animationDuration = (Math.random() * 5 + 4) + "s";
+                f.style.fontSize = (Math.random() * 20 + 20) + "px";
+                screen4.appendChild(f);
+            }
+        }
+
+        /* BUTTONS */
+        yesBtn.onclick = () => {
+            showScreen(screen2);
+            clearConfetti();
+            createConfetti(screen2);
+        };
+
+        noBtn.onmouseover = () => {
+            noBtn.style.position = "absolute";
+            noBtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+            noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+        };
+
+        /* SCREEN 2 */
+        screen2.onclick = () => {
+            showScreen(screen3);
+            clearConfetti();
+            createConfetti(screen3);
+            typeMessage1();
+        };
+
+        /* TYPEWRITER 1 */
+        const messages1 = [
+            "You are awesome 💖",
+            "Happy Birthday, Suwana 🎂",
+            "Stay happy, Today and always 😄",
+            "You are valued more than you know 💕",
+            "You deserve all the happiness ❤️",
+            "This site was made just for you ✨"
+        ];
+
+        let i = 0, j = 0;
+
+        function typeMessage1() {
+            let box = document.getElementById("messageBox");
+            box.innerHTML = "";
+
+            function type() {
+                if (i < messages1.length) {
+                    if (j < messages1[i].length) {
+                        box.innerHTML += messages1[i][j++];
+                        setTimeout(type, 40);
+                    } else {
+                        box.innerHTML += "<br><br>";
+                        i++; j = 0;
+                        setTimeout(type, 500);
+                    }
+                } else {
+                    nextBtn1.style.display = "block";
+                }
+            }
+            type();
+        }
+
+        /* NEXT → SCREEN 4 */
+        nextBtn1.onclick = () => {
+            showScreen(screen4);
+            createFlowers();
+            typeMessage2();
+        };
+
+        /* TYPEWRITER 2 (YOU CAN EDIT THIS) */
+        const messages2 = [
+            "I really care about you 💕",
+            "You mean a lot to me🌸",
+            "I hope you keep smiling 😊",
+            "You make everything brighter ✨",
+            "Wishing you all the best on your special day! 🎉",
+            "now you can go back to instagram"
+        ];
+
+        let a = 0, b = 0;
+
+        function typeMessage2() {
+            let box = document.getElementById("messageBox2");
+            box.innerHTML = "";
+
+            function type() {
+                if (a < messages2.length) {
+                    if (b < messages2[a].length) {
+                        box.innerHTML += messages2[a][b++];
+                        setTimeout(type, 40);
+                    } else {
+                        box.innerHTML += "<br><br>";
+                        a++; b = 0;
+                        setTimeout(type, 500);
+                    }
+                } else {
+                    nextBtn2.style.display = "block";
+                }
+            }
+            type();
+        }
+
+        /* FINAL BUTTON → INSTAGRAM */
+        nextBtn2.onclick = () => {
+            window.location.href = "https://instagram.com/suwana_8";
+        };
+    </script>
+
+</body>
+
+</html>
